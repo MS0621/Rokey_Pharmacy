@@ -12,7 +12,6 @@
 > 공식 자료는 [두산로보틱스 공식 홈페이지](http://www.doosanrobotics.com/kr/)를 참고해 주세요.   
 > github (https://github.com/DoosanRobotics/doosan-robot2)
 
-# 🏥 AI 기반 협동 약국 로봇 시스템 (RAAPS)
 
 ## 1. 프로젝트 개요
 
