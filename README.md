@@ -102,12 +102,13 @@
 ## 5. 💊 의약품 목록
 
 - 전문의약품
-| 증상 | 의약품 |
-|------|--------|
-| 감기 | panstar_tab, amoxicle_tab |
-| 피부염 | monodoxy_cap, ganakan_tab, sudafed_tab |
-| 소화불량 | nexilen_tab, medilacsenteric_tab, magmil_tab |
-| 설사 | samsung_octylonium_tab, famodine, otilen_tab |
+| 🩺 증상       | 💊 의약품 목록                                              |
+|--------------|----------------------------------------------------------|
+| 감기         | panstar_tab, amoxicle_tab                                |
+| 피부염       | monodoxy_cap, ganakan_tab, sudafed_tab                   |
+| 소화불량     | nexilen_tab, medilacsenteric_tab, magmil_tab             |
+| 설사         | samsung_octylonium_tab, famodine, otilen_tab             |
+
 
 - 일반의약품:  타이레놀, codawon_syrup, bandage, 파스
 
