@@ -124,13 +124,13 @@
 
 
 ### 시스템 플로우
-# 👨‍⚕️ 전문의약품 시스템 플로우
+### 👨‍⚕️ 전문의약품 시스템 플로우
 
 <img width="783" height="728" alt="image" src="https://github.com/user-attachments/assets/2aec3f1c-1ce3-42c5-b492-901424101c19" />
 
 
 
-# 🩺 일반의약품 처리 흐름
+### 🩺 일반의약품 처리 흐름
 
 <img width="783" height="384" alt="image" src="https://github.com/user-attachments/assets/d120851c-984a-4023-882c-41979cf1839a" />
 
