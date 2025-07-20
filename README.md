@@ -156,6 +156,8 @@
 ## 8. 🎥 시연 영상
 
 - [![영상 보기](https://img.youtube.com/vi/hqsi3LKkr-4/0.jpg)](https://youtu.be/hqsi3LKkr-4)
+- 
+- [![음성 명령 포함 ver 영상 보기](https://img.youtube.com/vi/1zJYaA5mdBo/0.jpg)](https://youtu.be/1zJYaA5mdBo)
 
 
 ---
