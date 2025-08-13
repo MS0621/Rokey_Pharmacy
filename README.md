@@ -26,37 +26,110 @@
 ### 작업 환경
 <img src="rokey_project/image/workspace/IMG_3175.jpg" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="project_management"></img> 
 
+
+
+### 개발 환경
+본 프로젝트는 Ubuntu 22.04 (ROS2 humble) 환경에서 개발되었습니다.   
+&nbsp;
+
+###  How to run
+
+#### **robot control node**
+code: [main_robot_control](rokey_project/rokey_project/main_robot_control.py)
+```bash
+ros2 run rokey_project main_robot_control
+```
+
+#### **vision**
+code: [main_vision_realsense](rokey_project/rokey_project/main_vision_realsense.py)
+```bash
+ros2 run rokey_project main_vision_realsense
+```
+
+#### **AI speaker**
+code: [main_vision_realsense](rokey_project/rokey_project/ai_speaker.py)
+```bash
+ros2 run rokey_project ai_speaker
+```
+
+#### **Ultrasound**
+code: [main_vision_realsense](rokey_project/rokey_project/dual_ultra.py)
+```bash
+ros2 run rokey_project dual_ultra
+```
+&nbsp;
 ---
 
 ## 2. 팀 구성 및 역할
 
-| 이름 | 역할 |
-|------|------|
-| 백홍하 (팀장) | Vision (약 탐지/좌표 추정), 로봇 이동 제어, 통합 |
-| 서형원 | Robot control(일반 의약품)|
-| 정민섭 | Voice node, 초음파 센서 기반 손님 인식 시스템 구축 및 통합|
-| 정서윤 | Vision (QR, 선반, 약 탐지) 및 전문약 통합 |
-| 멘토: 이충현 수석님 | 로봇 환경 및 알고리즘 지도 |
+|이름|담당 업무|
+|--|--|
+|백홍하(팀장)|Vision(약 탐지, 좌표 추정), Robot 제어, ROS2 통신|
+|서형원|Robot 제어(일반 의약품 전달)|
+|정민섭|Voice(약 추천 및 설명), ROS2 통신, 초음파 센서 처리|
+|정서윤|Vision(QR코드 인식, 약 탐지, 서랍 text 분류), 통합|
 
 ---
 
-## 3. 시스템 구성 및 기능
+## 3. 프로젝트 구현 일정
+**진행 일자: 25.5.26(월) ~ 25.6.5(목) (11일)**
+<img width="1307" height="763" alt="image" src="https://github.com/user-attachments/assets/76800cb8-06d7-431c-a1a0-a4b649cb4bf3" />
+
+---
+
+## 4. SKILLS
+### **Development Environment**
+<div align=left>
+  
+  ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+  ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+</div>
+
+[![My Skills](https://skillicons.dev/icons?i=ubuntu,vscode&theme=light)](https://skillicons.dev)
+
+### **Robotics**
+![ROS](https://img.shields.io/badge/ros-%230A0FF9.svg?style=for-the-badge&logo=ros&logoColor=white)   
+[![My Skills](https://skillicons.dev/icons?i=ros&theme=light)](https://skillicons.dev)
+
+### **Programming Languages**
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)   
+[![My Skills](https://skillicons.dev/icons?i=python&theme=light)](https://skillicons.dev)
+
+### **AI & Computer Vision**
+<div align=left>
+  
+  ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)
+  ![OpenCV](https://img.shields.io/badge/opencv-%23white.svg?style=for-the-badge&logo=opencv&logoColor=white)
+  ![YOLO](https://img.shields.io/badge/YOLO-111F68?style=for-the-badge&logo=YOLO&logoColor=white)
+</div>
+
+[![My Skills](https://skillicons.dev/icons?i=pytorch,opencv&theme=light)](https://skillicons.dev) 
+
+
+---
+## 4. 시스템 구성 및 기능
 
 ### 하드웨어 구성
-- **로봇:** Doosan M0609 협동로봇  
-- **그리퍼:** OnRobot RG2  
-- **센서:** Intel RealSense D435i, Webcam C270, 초음파센서(HC-SRO4)  
-- **제어보드:** Raspberry Pi 4 4GB  
-- **입출력:** 마이크, 블루투스 스피커  
+#### **Robot**
+- Doosan Robotics m0609, OnRobot RG2 Gripper
+#### **Vision Camera**
+- Intel RealSense D435i
+#### **SBC**
+- Raspberrypi4 4gb
+#### **Mic**
+- Logitech HD Webcam C270
+#### **Speaker**
+- Blutooth speaker
+#### **Sensor**
+- HC-SRO4 Ultrasonic Sensor
 
 ### AI 비전 시스템
 - **YOLOv11 기반 객체 탐지**  
-  - Dataset: 20 → 60  
-  - Epoch 200, mAP > 0.99  
-- **ResNet18 기반 분류**  
-  - Accuracy: 1.00 (정상/이상 의약품)  
+  - 증상별 알약 구분
+  - 일반 약품 구분
+    
 - **Segmentation**  
-  - cold, dermatitis, dyspepsia, diarrhea 등 증상 분류 및 좌표 추정  
+  - 알약의 pose 및 좌표 추정  
 
 ### 로봇 제어 시스템
 - **rclpy 기반 ROS2 제어 패키지 구성**  
@@ -141,9 +214,8 @@
 ## 7. 기대 효과 및 활용 방안
 
 ### 기대 효과
-- 약물 사고 예방 → 부작용/사망 사고 감소
+- 약물 사고 예방 → 의료 사고, 부작용 최소화
 - 약사의 반복 업무 감소 → 고부가가치 업무 집중
-- 고령자/장애인 대상 복약 실수 방지
 - 팬데믹 대비 비대면 약국 운영 가능
 
 ### 활용 방안
