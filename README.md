@@ -170,7 +170,10 @@ AI Vision 기술을 활용한 약 분류 및 조제로 안정성 향상
 &nbsp;
 
 ## 8. ✨ 주요 기능
-### 1. 초음파 센서 사람 감지
+
+### 1. 전문 약품 처방
+
+#### 1. 초음파 센서 사람 감지
 - 5~37 cm 거리에 있는 사용자 3초 이상 감지   
 - moving average 필터   
 <img src="https://github.com/user-attachments/assets/d390d406-e97c-4f00-8c67-663e4a36e04a" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
@@ -240,6 +243,8 @@ AI Vision 기술을 활용한 약 분류 및 조제로 안정성 향상
 <img src="https://github.com/user-attachments/assets/e8281509-4721-49a5-9d01-cc0180c0407e" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
 
 &nbsp;
+
+### 2. 일반 약품 처방
 
 ## 9. 🔍 프로젝트 기대효과
 ### **활용 방안**
