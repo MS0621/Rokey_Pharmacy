@@ -38,15 +38,15 @@ ros2 run rokey_project main_vision_realsense
 ```
 
 #### **AI speaker**
-code: [main_vision_realsense](rokey_project/rokey_project/main_vision_realsense.py)
+code: [main_vision_realsense](rokey_project/rokey_project/ai_speaker.py)
 ```bash
 ros2 run rokey_project ai_speaker
 ```
 
 #### **Ultrasound**
-code: [main_vision_realsense](rokey_project/rokey_project/main_vision_realsense.py)
+code: [main_vision_realsense](rokey_project/rokey_project/dual_ultra.py)
 ```bash
-ros2 run rokey_project ultra2
+ros2 run rokey_project dual_ultra
 ```
 &nbsp;
 
