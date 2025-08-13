@@ -51,7 +51,15 @@ ros2 run rokey_project ultra2
 &nbsp;
 
 ### 📷 시연 영상
-https://youtu.be/FMOeqKwD2Ls
+
+- 음성 명령 포함 ver
+  
+  [![음성 명령 포함 ver 영상 보기](https://img.youtube.com/vi/1zJYaA5mdBo/0.jpg)](https://youtu.be/1zJYaA5mdBo)
+
+  
+- 배속 ver
+  
+  [![영상 보기](https://img.youtube.com/vi/hqsi3LKkr-4/0.jpg)](https://youtu.be/hqsi3LKkr-4)
 
 ---
 
@@ -246,23 +254,9 @@ AI Vision 기술을 활용한 약 분류 및 조제로 안정성 향상
 
 &nbsp;
 
-
-## 8. 🎥 시연 영상
-
-- 음성 명령 포함 ver
-  
-  [![음성 명령 포함 ver 영상 보기](https://img.youtube.com/vi/1zJYaA5mdBo/0.jpg)](https://youtu.be/1zJYaA5mdBo)
-
-  
-- 배속 ver
-  
-  [![영상 보기](https://img.youtube.com/vi/hqsi3LKkr-4/0.jpg)](https://youtu.be/hqsi3LKkr-4)
-
-
-
 ---
 
-## 9. More about project
+## More about project
 
 [▶️ PDF로 보기](https://drive.google.com/file/d/1z_QQFhGCjgT0Sqh8arpXodilGLL-YCai/preview)
 
