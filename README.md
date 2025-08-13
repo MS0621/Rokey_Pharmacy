@@ -164,7 +164,8 @@ AI Vision 기술을 활용한 약 분류 및 조제로 안정성 향상
 &nbsp;
 
 ## 7. 🛠️ Node Architecture
-<img src="rokey_project/image/node_architecture/250717_node_architecture.png" width="75%" height="75%" title="px(픽셀) 크기 설정" alt="system_flow"></img>
+<img width="719" height="274" alt="image" src="https://github.com/user-attachments/assets/4e083b68-764d-4aa9-bb4f-233cb7cd55f1" />
+
 
 &nbsp;
 
