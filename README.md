@@ -1,7 +1,5 @@
-💊 Rokey_Pharmacy
-===
-AI비전 기술 기반 협동로봇 약 조제 시스템 자동화   
-ROKEY B-1조 협동-2 Project (AI기반 협동 로봇 작업 어시스턴트 구현 프로젝트)
+# 💊 RAAPS – AI 기반 협동로봇 약 조제 어시스턴트 시스템
+## ROKEY B-1조 협동-2 Project
 ---
 
 ### 🔗 출처 및 라이선스
@@ -13,305 +11,168 @@ ROKEY B-1조 협동-2 Project (AI기반 협동 로봇 작업 어시스턴트 구
 > ⚠️ 본 저장소는 두산로보틱스의 공식 저장소가 아니며, 비공식적으로 일부 수정 및 구성을 포함하고 있습니다.  
 > 공식 자료는 [두산로보틱스 공식 홈페이지](http://www.doosanrobotics.com/kr/)를 참고해 주세요.   
 > github (https://github.com/DoosanRobotics/doosan-robot2)
+
+
+## 1. 프로젝트 개요
+
+**RAAPS (Rokey AI Automatic Pharmacy System)**는 사람의 생명과 직결된 **약 조제의 정확성과 안전성 확보**를 위해 개발된 **AI+로봇 기반 복약 보조 시스템**입니다.
+
+### 개발 목적
+
+- **약물 사고 예방**: 유사 약물 이름/포장, 비닐 삽입 오류 방지
+- **약사 업무 부담 완화**: AI 음성 안내를 통해 증상 기반 일반약 추천 및 복용 설명
+- **고령자/장애인 지원**: 스스로 복약이 어려운 사용자 대상 음성 안내 시스템 구축
+
+### 작업 환경
+<img src="rokey_project/image/workspace/IMG_3175.jpg" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="project_management"></img> 
+
 ---
 
-### 🔨 개발환경
-본 프로젝트는 Ubuntu 22.04 (ROS2 humble) 환경에서 개발되었습니다.   
-&nbsp;
+## 2. 팀 구성 및 역할
 
-### 🦾 작업공간
-<img src="rokey_project/image/workspace/IMG_3175.jpg" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="project_management"></img>   
-&nbsp;
+| 이름 | 역할 |
+|------|------|
+| 백홍하 (팀장) | Vision (약 탐지/좌표 추정), 로봇 이동 제어, 통합 |
+| 서형원 | Robot control(일반 의약품)|
+| 정민섭 | Voice node, 초음파 센서 기반 손님 인식 시스템 구축 및 통합|
+| 정서윤 | Vision (QR, 선반, 약 탐지) 및 전문약 통합 |
+| 멘토: 이충현 수석님 | 로봇 환경 및 알고리즘 지도 |
 
-### 💻 How to run
+---
 
-#### **robot control node**
-code: [main_robot_control](rokey_project/rokey_project/main_robot_control.py)
-```bash
-ros2 run rokey_project main_robot_control
-```
+## 3. 시스템 구성 및 기능
 
-#### **vision**
-code: [main_vision_realsense](rokey_project/rokey_project/main_vision_realsense.py)
-```bash
-ros2 run rokey_project main_vision_realsense
-```
+### 하드웨어 구성
+- **로봇:** Doosan M0609 협동로봇  
+- **그리퍼:** OnRobot RG2  
+- **센서:** Intel RealSense D435i, Webcam C270, 초음파센서(HC-SRO4)  
+- **제어보드:** Raspberry Pi 4 4GB  
+- **입출력:** 마이크, 블루투스 스피커  
 
-#### **AI speaker**
-code: [main_vision_realsense](rokey_project/rokey_project/ai_speaker.py)
-```bash
-ros2 run rokey_project ai_speaker
-```
+### AI 비전 시스템
+- **YOLOv11 기반 객체 탐지**  
+  - Dataset: 20 → 60  
+  - Epoch 200, mAP > 0.99  
+- **ResNet18 기반 분류**  
+  - Accuracy: 1.00 (정상/이상 의약품)  
+- **Segmentation**  
+  - cold, dermatitis, dyspepsia, diarrhea 등 증상 분류 및 좌표 추정  
 
-#### **Ultrasound**
-code: [main_vision_realsense](rokey_project/rokey_project/dual_ultra.py)
-```bash
-ros2 run rokey_project dual_ultra
-```
-&nbsp;
+### 로봇 제어 시스템
+- **rclpy 기반 ROS2 제어 패키지 구성**  
+- **DDS 통신 기반 실시간 제어**  
+- **Doosan ROS2 API 사용**
 
-### 📷 시연 영상
+###  Voice AI 시스템
+
+| 구성 | 사용 기술 |
+|------|-----------|
+| Wakeword 감지 | OpenWakeWord (TFLite) |
+| 음성 인식 | Whisper-1 |
+| 의미 분석/추천 | GPT-4o |
+| 음성 출력 | Edge TTS (ko-KR-SunHiNeural) |
+
+---
+
+## 4.  주요 시나리오 및 동작 흐름
+
+### 👨‍⚕️ 전문의약품 처리 흐름
+
+1. 초음파로 사용자 감지
+2. QR 코드 인식 자세로 이동 + "안녕하세요, 로키약국입니다" 음성 출력
+3. QR 처방전 파싱 → JSON 변환 (이름, ATC코드, 투약 횟수 등)
+4. 서랍 위치 인식 및 이동
+5. YOLO Text 인식 → 해당 증상 좌표 추정
+6. 서랍 열기 및 약 탐지
+7. 약 포즈 계산(segmentation) → (x,y,θ)로 로봇 이동
+8. 알약 집기 → 봉투 포장 위치로 이동
+9. 약에 대한 설명 및 주의사항 설명
+
+### 🩺 일반의약품 처리 흐름
+
+1. 초음파로 사용자 감지
+2. "hello rokey" 발화 → 증상 입력 (예: 머리 아파요)
+3. GPT 분석 → 타이레놀/판콜A 추천
+4. 사용자: "타이레놀 주세요"
+5. 선반 인식 및 약 위치 추정
+6. 로봇 이동 → 약 집기
+7. 사용자 외력 감지 시 놓기
+8. TTS로 약 설명
+
+---
+
+## 5. 💊 의약품 목록
+
+- 전문의약품
+
+| 증상       |  의약품 목록                                              |
+|--------------|----------------------------------------------------------|
+| 감기         | panstar_tab, amoxicle_tab                                |
+| 피부염       | monodoxy_cap, ganakan_tab, sudafed_tab                   |
+| 소화불량     | nexilen_tab, medilacsenteric_tab, magmil_tab             |
+| 설사         | samsung_octylonium_tab, famodine, otilen_tab             |
+
+
+- 일반의약품:  타이레놀, codawon_syrup, bandage, 파스
+
+---
+
+## 6. 시스템 아키텍처
+
+### 노드 아키텍처
+<img width="688" height="257" alt="image" src="https://github.com/user-attachments/assets/4431b286-0d3f-4205-b1f2-c63dd650ea72" />
+
+
+### 시스템 플로우
+### 👨‍⚕️ 전문의약품 시스템 플로우
+
+<img width="783" height="728" alt="image" src="https://github.com/user-attachments/assets/2aec3f1c-1ce3-42c5-b492-901424101c19" />
+
+
+
+### 🩺 일반의약품 처리 흐름
+
+<img width="783" height="384" alt="image" src="https://github.com/user-attachments/assets/d120851c-984a-4023-882c-41979cf1839a" />
+
+
+
+---
+
+## 7. 기대 효과 및 활용 방안
+
+### 기대 효과
+- 약물 사고 예방 → 부작용/사망 사고 감소
+- 약사의 반복 업무 감소 → 고부가가치 업무 집중
+- 고령자/장애인 대상 복약 실수 방지
+- 팬데믹 대비 비대면 약국 운영 가능
+
+### 활용 방안
+- 약국 자동 조제 시스템  
+- 병원 및 재택 의료 어시스턴트  
+- 창고/서랍 물류 자동화  
+
+---
+
+## 8. 🎥 시연 영상
 
 - 음성 명령 포함 ver
   
   [![음성 명령 포함 ver 영상 보기](https://img.youtube.com/vi/1zJYaA5mdBo/0.jpg)](https://youtu.be/1zJYaA5mdBo)
 
-  
+
 - 배속 ver
   
   [![영상 보기](https://img.youtube.com/vi/hqsi3LKkr-4/0.jpg)](https://youtu.be/hqsi3LKkr-4)
 
----
-
-&nbsp;
-
-## 목차
-
-#### [1. 📘 프로젝트 개요](#1--프로젝트-개요-1)   
-#### [2. 👥 프로젝트 팀 구성 및 역할분담](#2--프로젝트-팀-구성-및-역할분담-1)   
-#### [3. 🗓 프로젝트 구현 일정](#3--프로젝트-구현-일정-1)   
-#### [4. 📌 SKILLS](#4--skills-1)   
-#### [5. 🤖 Hardware](#5--hardware-1)   
-#### [6. 🎬 System Flow](#6--system-flow-1)   
-#### [7. 🛠️ Node Architecture](#7-%EF%B8%8F-node-architecture-1)   
-#### [8. ✨ 주요 기능](#8--주요-기능-1)   
-#### [9. 🔍 프로젝트 기대효과](#9--프로젝트-기대효과-1)   
-
 
 
 ---
 
-&nbsp;
-
-## 1. 📘 프로젝트 개요
-의료 현장에서 의사·간호사·약사 등의 인력 부족, 처방·조제·투약 등 여러 단계에서 발생하는 문제로 투약 사고가 발생하고 있습니다. 이는 환자의 안전에 위해가 되는 만큼, 업무 효율화를 통한 안전한 투약 환경을 만들 필요가 있습니다.   
-따라서 본 프로젝트에서는, 로봇 매니퓰레이터와 AI 비전 기술을 활용하여 약 조제를 자동화하는 시스템을 만들어 의료진의 업무 부담을 덜고, 의료 사고 발생율을 줄이고자 합니다.   
-
-### **프로젝트 목표**
-1. **약 조제 오류로 인한 사고 방지**   
-AI Vision 기술을 활용한 약 분류 및 조제로 안정성 향상   
-2. **의료 인력 부족 해결**   
-약 조제의 자동화로 의료진 업무 부담 감소 및 인력 부족 문제 해결   
-3. **고령화 대응**   
-스스로 약을 복용하기 어려운 고령층을 위해 AI Voice를 활용한 음성 안내 서비스 제공
-
-&nbsp;
-
-## 2. 👥 프로젝트 팀 구성 및 역할분담
-|이름|담당 업무|
-|--|--|
-|백홍하(팀장)|Vision(약 탐지, 좌표 추정), Robot 제어, ROS2 통신|
-|서형원|Robot 제어(일반 의약품 전달)|
-|정민섭|Voice(약 추천 및 설명), ROS2 통신, 초음파 센서 처리|
-|정서윤|Vision(QR코드 인식, 약 탐지, 서랍 text 분류), 통합|
-
-&nbsp;
-
-## 3. 🗓 프로젝트 구현 일정
-**진행 일자: 25.5.26(월) ~ 25.6.5(목) (11일)**
-<img width="1307" height="763" alt="image" src="https://github.com/user-attachments/assets/76800cb8-06d7-431c-a1a0-a4b649cb4bf3" />
-
-
-## 4. 📌 SKILLS
-### **Development Environment**
-<div align=left>
-  
-  ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
-  ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
-</div>
-
-[![My Skills](https://skillicons.dev/icons?i=ubuntu,vscode&theme=light)](https://skillicons.dev)
-
-### **Robotics**
-![ROS](https://img.shields.io/badge/ros-%230A0FF9.svg?style=for-the-badge&logo=ros&logoColor=white)   
-[![My Skills](https://skillicons.dev/icons?i=ros&theme=light)](https://skillicons.dev)
-
-### **Programming Languages**
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)   
-[![My Skills](https://skillicons.dev/icons?i=python&theme=light)](https://skillicons.dev)
-
-### **AI & Computer Vision**
-<div align=left>
-  
-  ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)
-  ![OpenCV](https://img.shields.io/badge/opencv-%23white.svg?style=for-the-badge&logo=opencv&logoColor=white)
-  ![YOLO](https://img.shields.io/badge/YOLO-111F68?style=for-the-badge&logo=YOLO&logoColor=white)
-</div>
-
-[![My Skills](https://skillicons.dev/icons?i=pytorch,opencv&theme=light)](https://skillicons.dev) 
-
-&nbsp;
-
-## 5. 🤖 Hardware
-### **Robot**
-- Doosan Robotics m0609, OnRobot RG2 Gripper
-### **Vision Camera**
-- Intel RealSense D435i
-### **SBC**
-- Raspberrypi4 4gb
-### **Mic**
-- Logitech HD Webcam C270
-### **Speaker**
-- Blutooth speaker
-### **Sensor**
-- HC-SRO4 Ultrasonic Sensor
-
-&nbsp;
-
-## 6. 🎬 System Flow
-<img src="rokey_project/image/system_flow/ROKEY_Pharmacy_detail.drawio.png" width="75%" height="75%" title="px(픽셀) 크기 설정" alt="system_flow"></img>
-
-&nbsp;
-
-## 7. 🛠️ Node Architecture
-<img width="719" height="274" alt="image" src="https://github.com/user-attachments/assets/4e083b68-764d-4aa9-bb4f-233cb7cd55f1" />
-
-
-&nbsp;
-
-## 8. ✨ 주요 기능
-
-### 1. 전문 약품 처방
-
-#### 1. 초음파 센서 사람 감지
-- 5~37 cm 거리에 있는 사용자 3초 이상 감지   
-- moving average 필터   
-<img src="https://github.com/user-attachments/assets/d390d406-e97c-4f00-8c67-663e4a36e04a" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
-
-&nbsp;
-#### 2. 처방전 QR 인식 자세 & voice 약국 안내 음성
-- 로봇의 동작은 모두 movesj 로 자연스럽게 연결   
-- voice: “안녕하세요 rokey약국입니다. qr을 스캔하거나 hello rokey를 말해주세요”  
-<img src="https://github.com/user-attachments/assets/81733333-48ba-4921-8eac-3c5cf5c7d0fd" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
-
-&nbsp;
-#### 3. QR코드 인식
-<img src="https://github.com/user-attachments/assets/af6e1221-5292-4f17-baa2-be276dffb9e0" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
-<img src="https://github.com/user-attachments/assets/44a135ab-882e-4c1f-ba33-fa2a725d61aa" width="30%" height="30%" title="px(픽셀) 크기 설정" alt="image"></img>
-
-&nbsp;
-#### 4. 서랍 바라보는 모션 / 서랍 text 인식
-<img src="https://github.com/user-attachments/assets/8a1c71d9-1aed-4b71-9499-7248f7c92c85" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
-<img src="https://github.com/user-attachments/assets/df43f7af-182a-4cc6-8a96-5676fc8755ae" width="30%" height="30%" title="px(픽셀) 크기 설정" alt="image"></img>
-
-&nbsp;
-#### 5. 인식한 text 서랍 열기
-<img src="https://github.com/user-attachments/assets/1cd024d4-4a71-4e48-9322-bc1b2d39cb87" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
-
-&nbsp;
-#### 6. 서랍 안 바라보는 자세 이동
-<img src="https://github.com/user-attachments/assets/73f02dd5-6f5a-4c0c-83bf-4d5501e130c1" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
-
-&nbsp;
-#### 7. 약 탐지
-- YOLO 활용 약 구분   
-- 타원형 알약은 instance segmentation을 활용하여 타원 모양 추정 -> 회전각 theta 계산   
-- 알약의 중심점 좌표와 회전각 정보(x, y, theta)를 robot_control_node에 퍼블리시   
-<img src="https://github.com/user-attachments/assets/b68e3548-eaa7-49d4-8773-d03e36454e04" width="40%" height="40%" title="px(픽셀) 크기 설정" alt="image"></img>
-<img src="https://github.com/user-attachments/assets/82cb9e45-f7db-4e4d-a0e6-d1cebfa76185" width="40%" height="40%" title="px(픽셀) 크기 설정" alt="image"></img>
-
-&nbsp;
-#### 8. 약 pick and place
-- gripper 너비 알약 크기에 맞춰 조정   
-- 카메라캘리브레이션을 활용하여 알약의 (x, y) 정보를 월드좌표로 변환한 후 로봇 해당 위치로 이동   
-- 알약의 theta 값 만큼 로봇 6축 회전 후 pick
-- 알약을 약봉투에 넣을 때 위아래로 2번 흔드는 모션 추가하여 잘 떨어지지 않을 때를 방지   
-<img src="https://github.com/user-attachments/assets/9a691ccf-ccf2-4e91-a2be-dbb930160938" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
-
-&nbsp;
-#### 9. 서랍 넣기
-- 알약을 모두 처방한 후 서랍 넣기   
-- 서랍을 살짝 들고 넣기 (서랍의 바닥면 마찰 최소화)   
-- 마무리로 밀어 넣기   
-<img src="https://github.com/user-attachments/assets/9e0def9a-e57a-4792-8128-c4c5f8eef28d" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
-
-&nbsp;
-#### 10. 약 포장 대기 상태 이동  
-- 약사가 약을 포장하고 신호를 줄 때까지 대기   
-<img src="https://github.com/user-attachments/assets/8b859276-1b33-4857-8473-1b3b172934a5" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
-
-&nbsp;
-#### 11. 약사 약 포장 후 신호
-- 약사가 약을 검사 후 포장
-- 그리퍼 사이에 약봉지를 끼워 넣고 x축 방향으로 외력을 주어 신호 전달   
-<img src="https://github.com/user-attachments/assets/b2ac0cbc-f5f4-41fa-9217-4e2ca8568bb1" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
-
-&nbsp;
-#### 12. 약 봉투에 넣기 / 해당 약에 대한 설명
-- 외력 신호를 받은 로봇은 약을 약 봉투에 넣음   
-- voice로 처방한 약에 대한 설명 (예: “해당 약은 위염치료제이며 다른 약 복용시 위 손상을 막아줍니다. 감사합니다 안녕히가세요.”)   
-<img src="https://github.com/user-attachments/assets/e8281509-4721-49a5-9d01-cc0180c0407e" width="50%" height="50%" title="px(픽셀) 크기 설정" alt="image"></img>
-
-&nbsp;
-
-### 2. 일반 약품 처방
-
-#### 1. 초음파 센서 사람 감지
-- 5~37 cm 거리에 있는 사용자 3초 이상 감지   
-- moving average 필터   
-
-#### 2. 처방전 QR 인식 자세 & voice 약국 안내 음성
-- 로봇의 동작은 모두 movesj 로 자연스럽게 연결   
-- voice: “안녕하세요 rokey약국입니다. qr을 스캔하거나 hello rokey를 말해주세요”  
-
-&nbsp;
-#### 3. hello rokey 인식 후 증상 또는 원하는 약품 발화
-- ex) 사용자 증상 : 나 머리 아파 / 열이 나 / 감기 걸린 것 같아 
-
-&nbsp;
-#### 4. GPT가 의약품 추천
-- ex) GPT : “추천약은 타이레놀 (해열진통제)과 판콜에이 (감기약)입니다. 증상이 계속되면 병원에 방문하세요.”
-
-
-&nbsp;
-#### 5.  voice 추천의약품 구매 의사 확인
-- ex) GPT : “추천약은 타이레놀입니다. 어떤 약을 드릴까요?”
-
-&nbsp;
-#### 6. voice 의약품 구매
-- ex) 사용자: “타이레놀 한 개 줘.”
-      로봇: “타이레놀을 준비하겠습니다.”
-
-&nbsp;
-#### 7. 선반 위치 이동 및 인식 
-- YOLO 활용 약 구분   
-- voice 약품  == yolo object 약품
-- 약품 (x,y) 가 4분면 중 하나 해당 -> 지정 좌표 이동 
-
-
-&nbsp;
-#### 8. 의약품 꺼내기 및 가져다주기  
-- 물품에 따라 그리퍼 너비 조정
-- 2층 -> movec 로 문턱 넘기-> movej
-- 1층 -> movej
-
-
-
-&nbsp;
-#### 9. x축 외력 감지시 놓기 및 약 설명
-- 사용자 흔들기 모션 -> check_force_condition x축 외력 감지 -> gripper 놓기 및 해당 약 설명
-- voice 타이레놀: “해당 약은 해열진통제이며 진통 완화 및 열 내림 효과가 있습니다. 감사합니다 안녕히가세요.”
-
-## 9. 🔍 프로젝트 기대효과
-### **활용 방안**
-- 약국 내 조제 공정
-- 의료 어시스턴트
-- 창고, 서랍 정리
-
-### **기대 효과**
-- 약물 사고 예방 → 의료 사고, 부작용 최소화
-- 약사의 단순 반복업무 감소 → 핵심 업무 집중 가능
-- 팬데믹 등 상황에서 비대면 복약 시스템 활용 가능
-
-&nbsp;
-
----
-
-## More about project
+## 9. More about project
 
 [▶️ PDF로 보기](https://drive.google.com/file/d/1z_QQFhGCjgT0Sqh8arpXodilGLL-YCai/preview)
 
 [▶️ PPT로 보기](https://docs.google.com/presentation/d/19cP9Dc5Mcr3mRwFerbrN9vhR4jQqp0tBE7f35isZteA/edit?usp=drive_link/preview)
 
-   
+
 ---
